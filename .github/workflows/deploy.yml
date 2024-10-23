@@ -30,7 +30,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            Gaspard-s/mlops:latest
+            Gaspard-s/mlops
             Gaspard-s/mlops:${{ github.sha }}
 
 
