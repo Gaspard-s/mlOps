@@ -27,7 +27,7 @@ jobs:
 
       # Build the Docker image
       - name: Build Docker image
-        run: docker compose build ml_model
+        run: docker build ml_model
 
       # Tag the Docker image with the desired tags
       - name: Tag Docker image
