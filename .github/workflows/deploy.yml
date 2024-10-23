@@ -3,7 +3,7 @@ name: Docker CI/CD
 on:
   push:
     branches:
-      - main  # You can adjust this to any branch you prefer
+      - main  # Trigger on pushes to the 'main' branch
 
 jobs:
   build:
@@ -14,24 +14,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up Docker to build the image
+      # Set up Docker Buildx for multi-platform builds (if needed)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+      # Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}  # Secret set in GitHub settings
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Secret set in GitHub settings
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          file: ./Dockerfile
-          push: true
-          tags: |
-            Gaspard-s/mlops
-            Gaspard-s/mlops:${{ github.sha }}
+      # Build the Docker image
+      - name: Build Docker image
+        run: docker compose build ml_model
 
+      # Tag the Docker image with the desired tags
+      - name: Tag Docker image
+        run: docker tag ml_model gaspards/mlops:latest
 
-  
+      # Push the Docker image to Docker Hub
+      - name: Push Docker image to Docker Hub
+        run: docker push gaspards/mlops
