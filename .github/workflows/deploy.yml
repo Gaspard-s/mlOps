@@ -50,3 +50,5 @@ jobs:
             docker pull gaspards/mlops:latest &&
             docker rm -f my_app_gaspard || true &&
             docker run -d --name my_app_gaspard -p 8096:8000 gaspards/mlops:latest
+
+            
