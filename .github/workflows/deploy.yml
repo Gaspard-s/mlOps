@@ -39,4 +39,14 @@ jobs:
           docker push gaspards/mlops
           docker push gaspards/mlops:${{ github.sha }}
 
-          
+          # Install sshpass
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      # Deploy to the remote server via sshpass and Docker commands
+      - name: Deploy to VM
+        run: |
+          sshpass -p "${{ secrets.VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no ubuntu@20.86.55.5
+            docker pull gaspards/mlops:latest &&
+            docker rm -f my_app_gaspard || true &&
+            docker run -d --name my_app_gaspard -p 8096:8000 gaspards/mlops:latest
