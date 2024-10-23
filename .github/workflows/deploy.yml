@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up Docker Buildx for multi-platform builds (if needed)
+      # Set up Docker Buildx for multi-platform builds (optional, you can skip if not needed)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -22,17 +22,21 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}  # Secret set in GitHub settings
-          password: ${{ secrets.DOCKER_PASSWORD }}  # Secret set in GitHub settings
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build the Docker image
+      # Build the Docker image from the Dockerfile at the root
       - name: Build Docker image
-        run: docker build ml_model
+        run: docker build -t gaspards/mlops:latest .
 
-      # Tag the Docker image with the desired tags
+      # Tag the Docker image with the latest commit SHA
       - name: Tag Docker image
-        run: docker tag ml_model gaspards/mlops:latest
+        run: docker tag gaspards/mlops:latest gaspards/mlops:${{ github.sha }}
 
       # Push the Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
-        run: docker push gaspards/mlops
+        run: |
+          docker push gaspards/mlops
+          docker push gaspards/mlops:${{ github.sha }}
+
+          
